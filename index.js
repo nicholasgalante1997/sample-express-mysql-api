@@ -1,20 +1,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const cors = require('cors');
-// use with mysql npm package
-const mysql = require('mysql');
-
-const connect = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'sample_express',
-});
-
-connect.connect((err) => {
-  // eslint-disable-next-line no-console
-  if (err) console.log(err);
-});
+const controller = require('./controller');
 
 const app = express();
 const port = process.env.PORT || 4200;
@@ -26,22 +13,19 @@ app.use(cors());
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
-app.get('/', (req, res) => {
-  connect.query('Select * from simpsons ', (err, results, fields) => {
-    if (err) throw new Error(err.message);
-    res.json(results);
-  });
-});
+app.get('/', controller.read);
 
-app.get('/:id', (req, res) => {
-  const { id } = req.params;
-  connect.query('Select * from simpsons where id = ? ', [id], (err, results, fields) => {
-    if (err) throw new Error(err.message);
-    res.json(results);
-  });
-});
+app.get('/:id', controller.readById);
 
-app.post('/', )
+app.post('/', controller.create);
+
+app.put('/:id', controller.update);
+
+app.delete('/:id', controller.deleteById);
 
 // eslint-disable-next-line no-console
-app.listen(port, () => console.log(`Express Server started on port ${port}`));
+if (require.main === module) {
+  app.listen(port, () => console.log(`Express Server started on port ${port}`));
+} else {
+  module.exports = app;
+}

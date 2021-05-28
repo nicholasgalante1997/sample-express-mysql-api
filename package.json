@@ -4,7 +4,7 @@
   "description": "sample-express-app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon index.js"
   },
   "author": "nickgdev",
